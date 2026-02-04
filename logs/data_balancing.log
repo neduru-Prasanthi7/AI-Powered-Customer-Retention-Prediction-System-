@@ -1,0 +1,5 @@
+2026-02-04 01:30:00,282 - INFO - Checking class imbalance
+2026-02-04 01:30:00,282 - INFO - Class 0 (No) : 4138
+2026-02-04 01:30:00,282 - INFO - Class 1 (Yes): 1496
+2026-02-04 01:30:00,282 - INFO - Imbalance Ratio: 2.77
+2026-02-04 01:30:00,282 - INFO - Imbalance ratio < 3. Skipping balancing to avoid noise.

@@ -1,0 +1,5 @@
+2026-02-04 01:29:42,966 - INFO - constant imputer ROC-AUC: 0.8269
+2026-02-04 01:29:43,076 - INFO - mean imputer ROC-AUC: 0.8266
+2026-02-04 01:29:43,187 - INFO - median imputer ROC-AUC: 0.8267
+2026-02-04 01:29:43,321 - INFO - knn imputer ROC-AUC: 0.8269
+2026-02-04 01:29:43,321 - INFO - Best imputer selected: knn with ROC-AUC: 0.8269

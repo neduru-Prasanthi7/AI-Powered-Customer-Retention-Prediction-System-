@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Customer Churn Prediction</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+* { box-sizing: border-box; font-family: 'Roboto', sans-serif; }
+
+body {
+    background: linear-gradient(to right, #ffecd2, #fcb69f);
+    margin: 0; padding: 0;
+}
+
+.container {
+    max-width: 900px;
+    margin: 40px auto;
+    background: white;
+    border-radius: 15px;
+    padding: 30px 40px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+    border-top: 8px solid #ff6600;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #333;
+    font-size: 30px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+label { display: block; margin-bottom: 6px; font-weight: 500; color: #555; }
+
+select, input {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 18px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+}
+
+.sim-options {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.sim-option {
+    flex: 1;
+    text-align: center;
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: #fafafa;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+.sim-option img {
+    max-width: 80px;
+    display: block;
+    margin: 0 auto 8px;
+}
+
+.sim-option span {
+    display: block;
+    font-weight: bold;
+    font-size: 14px;
+    color: #333;
+}
+
+.sim-option.selected {
+    border-color: #ff6600;
+    background-color: #fff3e6;
+    box-shadow: 0 6px 15px rgba(255,102,0,0.4);
+    transform: scale(1.05);
+}
+
+.sim-option:hover {
+    transform: scale(1.03);
+    box-shadow: 0 4px 12px rgba(255,102,0,0.3);
+}
+
+button {
+    width: 100%;
+    padding: 16px;
+    background: #ff6600;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+
+button:hover {
+    background: #e65c00;
+    transform: scale(1.02);
+}
+
+.result {
+    margin-top: 25px;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.result.churn { background-color: #ffe6e6; color: #cc0000; }
+.result.no-churn { background-color: #e6ffe6; color: #009900; }
+
+.progress-container {
+    margin-top: 15px;
+    background-color: #ddd;
+    border-radius: 20px;
+    width: 100%;
+    height: 25px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    line-height: 25px;
+    transition: width 0.5s ease;
+    border-radius: 20px;
+}
+
+@media (max-width: 650px) {
+    .sim-options { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+<h2><i class="fa-solid fa-chart-line"></i> Customer Churn Prediction</h2>
+<form method="POST" action="/predict" id="churnForm">
+
+    <label>Gender <i class="fa-solid fa-venus-mars"></i></label>
+    <select name="gender"><option>Male</option><option>Female</option></select>
+
+    <label>Partner <i class="fa-solid fa-user-group"></i></label>
+    <select name="Partner"><option>Yes</option><option>No</option></select>
+
+    <label>Dependents <i class="fa-solid fa-child"></i></label>
+    <select name="Dependents"><option>Yes</option><option>No</option></select>
+
+    <label>Phone Service <i class="fa-solid fa-phone"></i></label>
+    <select name="PhoneService"><option>Yes</option><option>No</option></select>
+
+    <label>Internet Service <i class="fa-solid fa-wifi"></i></label>
+    <select name="InternetService"><option>DSL</option><option>Fiber optic</option><option>No</option></select>
+
+    <label>Contract <i class="fa-solid fa-file-contract"></i></label>
+    <select name="Contract"><option>Month-to-month</option><option>One year</option><option>Two year</option></select>
+
+    <label>Payment Method <i class="fa-solid fa-credit-card"></i></label>
+    <select name="PaymentMethod">
+        <option>Electronic check</option>
+        <option>Mailed check</option>
+        <option>Bank transfer (automatic)</option>
+        <option>Credit card (automatic)</option>
+    </select>
+
+    <label>Select SIM <i class="fa-solid fa-sim-card"></i></label>
+    <div class="sim-options">
+        <div class="sim-option" data-value="Jio">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Jio_logo.svg" alt="Jio"><span>Jio</span>
+        </div>
+        <div class="sim-option" data-value="Airtel">
+            <img src="https://upload.wikimedia.org/wikipedia/en/1/11/Airtel_logo.svg" alt="Airtel"><span>Airtel</span>
+        </div>
+        <div class="sim-option" data-value="Vi">
+            <img src="https://upload.wikimedia.org/wikipedia/en/5/55/Vi_Logo_2021.png" alt="Vi"><span>Vi</span>
+        </div>
+        <div class="sim-option" data-value="BSNL">
+            <img src="https://upload.wikimedia.org/wikipedia/en/0/0b/BSNL_Logo.svg" alt="BSNL"><span>BSNL</span>
+        </div>
+    </div>
+    <input type="hidden" name="SIM" id="simInput" required>
+
+    <label>Tenure (Months) <i class="fa-solid fa-clock"></i></label>
+    <input type="number" name="tenure" required>
+
+    <label>Monthly Charges <i class="fa-solid fa-money-bill-wave"></i></label>
+    <input type="number" step="0.01" name="MonthlyCharges" required>
+
+    <label>Total Charges <i class="fa-solid fa-dollar-sign"></i></label>
+    <input type="number" step="0.01" name="TotalCharges" required>
+
+    <button type="submit"><i class="fa-solid fa-rocket"></i> Predict Churn</button>
+
+    {% if prediction %}
+    <div class="result {% if prediction == 'Churn' %}churn{% else %}no-churn{% endif %}">
+        Prediction: {{ prediction }}
+        <span style="font-size:18px; margin-left:10px;">({{ risk }})</span>
+        <div class="progress-container">
+            <div class="progress-bar" style="width: {{ probability }}; background-color: {% if prediction=='Churn' %}#cc0000{% else %}#009900{% endif %};">
+                {{ probability }}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if error %}
+    <div class="result" style="color:red;">Error: {{ error }}</div>
+    {% endif %}
+
+</form>
+</div>
+
+<script>
+const simOptions = document.querySelectorAll('.sim-option');
+const simInput = document.getElementById('simInput');
+
+// Highlight previously selected SIM
+const selectedSIM = "{{ selected_sim|default('') }}";
+simOptions.forEach(option => {
+    if(option.dataset.value === selectedSIM) option.classList.add('selected');
+});
+
+// Click event
+simOptions.forEach(option => {
+    option.addEventListener('click', () => {
+        simOptions.forEach(o => o.classList.remove('selected'));
+        option.classList.add('selected');
+        simInput.value = option.getAttribute('data-value');
+    });
+});
+</script>
+
+</body>
+</html>
